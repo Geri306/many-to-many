@@ -7,43 +7,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "Address")
+@Entity
+@Table(name = "address")
 public class Address implements Serializable {
 
     @Id
     @GeneratedValue
     private Long id;
-
     private String street;
 
-    @Column(name = "`number`")
-    private String number;
-
-    private String postalCode;
-
-    @OneToMany(
-            mappedBy = "address",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+    @ManyToMany
+    @JoinTable(
+            name = "person_address",
+            joinColumns = @JoinColumn(name = "fk_address"),
+            inverseJoinColumns = @JoinColumn(name = "fk_person")
     )
-    private List<PersonAddress> owners = new ArrayList<>();
+    private List<Person> persons = new ArrayList<>();
 
-    public Address(Long id, String street, String number, String postalCode, List<PersonAddress> owners) {
-        this.id = id;
+    protected Address() {}
+
+    public Address(String street) {
         this.street = street;
-        this.number = number;
-        this.postalCode = postalCode;
-        this.owners = owners;
-    }
-
-    public Address() {
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    private void setId(Long id) {
         this.id = id;
     }
 
@@ -55,46 +46,33 @@ public class Address implements Serializable {
         this.street = street;
     }
 
-    public String getNumber() {
-        return number;
+    public List<Person> getPersons() {
+        return persons;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
     }
 
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public List<PersonAddress> getOwners() {
-        return owners;
-    }
-
-    public void setOwners(List<PersonAddress> owners) {
-        this.owners = owners;
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", street='" + street + '\'' +
+                ", persons=" + persons +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(street, address.street) &&
-                Objects.equals(number, address.number) &&
-                Objects.equals(postalCode, address.postalCode);
+        return Objects.equals(id, address.id) && Objects.equals(street, address.street) && Objects.equals(persons, address.persons);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(street, number, postalCode);
+        return Objects.hash(id, street, persons);
     }
 }
