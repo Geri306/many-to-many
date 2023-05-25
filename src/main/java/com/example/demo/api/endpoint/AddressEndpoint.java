@@ -35,7 +35,7 @@ public class AddressEndpoint {
         return addressService.saveMany(address);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     void delete(@PathVariable Long id) {
         addressService.delete(id);
     }

@@ -38,7 +38,7 @@ public class PersonEndpoint {
         return personService.saveMany(person);
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     void delete(@PathVariable Long id) {
         personService.delete(id);
     }
